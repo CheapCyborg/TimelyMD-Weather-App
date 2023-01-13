@@ -19,14 +19,3 @@ a:hover {
 .content ul {
   @apply my-6;
 }
-
-
-.alert-shown {
-  opacity: 1;
-  transition: all 250ms linear;
-}
-
-.alert-hidden {
-  opacity: 0;
-  transition: all 250ms linear 2s;
-}
