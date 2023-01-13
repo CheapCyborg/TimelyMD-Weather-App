@@ -1,45 +1,65 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-// Define a type for the slice state for geoLocation
-interface GeoLocationState {
-  latitude: number;
-  longitude: number;
-  currentCity: string;
+export interface Location {
+  city: string;
   currentState: string;
-  currentCountry: string;
+  country: string;
+}
+interface GeoLocationState {
+  city: string;
+  currentState: string;
+  country: string;
+  savedLocations: Location[];
+  error: string;
   cityLoading: boolean;
 }
 
 // Define the initial state using that type
 const initialState: GeoLocationState = {
-  latitude: 0,
-  longitude: 0,
-  currentCity: '',
+  city: '',
   currentState: '',
-  currentCountry: '',
+  country: 'US',
+  savedLocations: [],
+  error: '',
   cityLoading: true,
 };
 
-export const getCity = createAsyncThunk(
-  'weather/fetchWeatherData',
+export const getCityByCoords = createAsyncThunk(
+  'weather/fetchCityByCoords',
   async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
-    return fetch(
-      `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}`
-    )
-      .then((response) => response.json())
-      .catch((error) => console.log(error));
+    try {
+      const response = await fetch(
+        `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 );
 
 export const getGeoByCity = createAsyncThunk(
-  'weather/fetchWeatherDataByCoords',
-  async (city: string) => {
-    return fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}`
-    )
-      .then((response) => response.json())
-      .catch((error) => console.log(error));
+  'weather/fetchGeoByCity',
+  async ({
+    city,
+    state,
+    country,
+  }: {
+    city: string;
+    state: string;
+    country: string;
+  }) => {
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${city},${state},${country}&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 );
 
@@ -48,46 +68,59 @@ export const geoLocationSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setLatitude: (state, action: PayloadAction<number>) => {
-      state.latitude = action.payload;
+    addLocation: (state, action: PayloadAction<Location>) => {
+      state.savedLocations.push(action.payload);
     },
-    setLongitude: (state, action: PayloadAction<number>) => {
-      state.longitude = action.payload;
-    },
-    setCurrentCity: (state, action: PayloadAction<string>) => {
-      state.currentCity = action.payload;
-    },
-    setCurrentState: (state, action: PayloadAction<string>) => {
-      state.currentState = action.payload;
-    },
-    setCurrentCountry: (state, action: PayloadAction<string>) => {
-      state.currentCountry = action.payload;
+    removeLocation: (state, action: PayloadAction<Location>) => {
+      state.savedLocations = state.savedLocations.filter(
+        (location) =>
+          location.city !== action.payload.city &&
+          location.currentState !== action.payload.currentState &&
+          location.country !== action.payload.country
+      );
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCity.pending, (state) => {
+      .addCase(getCityByCoords.pending, (state) => {
         state.cityLoading = true;
       })
-      .addCase(getCity.fulfilled, (state, action) => {
+      .addCase(getCityByCoords.fulfilled, (state, action) => {
         state.cityLoading = false;
-        console.log(action?.payload[0]);
-        state.currentCity = action.payload[0].name;
+        if (action.payload.length === 0) {
+          state.error = 'Nothing found';
+          state.cityLoading = false;
+          return;
+        }
+        state.city = action.payload[0].name;
         state.currentState = action.payload[0].state;
-        state.currentCountry = action.payload[0].country;
+        state.country = action.payload[0].country;
+        state.error = '';
       })
-      .addCase(getCity.rejected, (state) => {
+      .addCase(getCityByCoords.rejected, (state) => {
+        state.cityLoading = false;
+      })
+      .addCase(getGeoByCity.pending, (state) => {
+        state.cityLoading = true;
+      })
+      .addCase(getGeoByCity.fulfilled, (state, action) => {
+        state.cityLoading = false;
+        if (action.payload.length === 0) {
+          state.error = 'Nothing found';
+          state.cityLoading = false;
+          return;
+        }
+        state.city = action.payload[0].name;
+        state.currentState = action.payload[0].state;
+        state.country = action.payload[0].country;
+        state.error = '';
+      })
+      .addCase(getGeoByCity.rejected, (state) => {
         state.cityLoading = false;
       });
   },
 });
 
-export const {
-  setLatitude,
-  setLongitude,
-  setCurrentCity,
-  setCurrentCountry,
-  setCurrentState,
-} = geoLocationSlice.actions;
+export const { addLocation, removeLocation } = geoLocationSlice.actions;
 
 export default geoLocationSlice.reducer;
