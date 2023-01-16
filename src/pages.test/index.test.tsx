@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 
 import Index from '@/pages/index';
+import { store } from '@/redux/store';
 
 // The easiest solution to mock `next/router`: https://github.com/vercel/next.js/issues/7479
 // The mock has been moved to `__mocks__` folder to avoid duplication
@@ -8,7 +10,11 @@ import Index from '@/pages/index';
 describe('Index page', () => {
   describe('Render method', () => {
     it('should have h1 tag', () => {
-      render(<Index />);
+      render(
+        <Provider store={store}>
+          <Index />
+        </Provider>
+      );
 
       const heading = screen.getByRole('heading', {
         name: /Boilerplate code/,
