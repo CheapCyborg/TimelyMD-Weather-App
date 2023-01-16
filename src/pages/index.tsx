@@ -343,38 +343,6 @@ const Index = () => {
         </div>
       </div>
     </Main>
-    //   <div className="mt-8 flex flex-col items-center justify-center">
-
-    //   <div>
-    //     {savedLocations.map((location: Location, index: number) => (
-    //       <div
-    //         key={index}
-    //         className="mx-2 transition duration-500 ease-in-out hover:scale-105"
-    //       >
-    //         <div className="mb-3 flex flex-col font-bold text-gray-900">
-    //           <span className="uppercase">{location.city}</span>
-    //           <span className="text-sm font-normal text-gray-700">
-    //             {location.currentState}, {location.country}
-    //           </span>
-    //         </div>
-    //         <button
-    //           onClick={() => dispatch(removeLocation(index))}
-    //           className="group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-black focus:outline-none focus:ring-4 focus:ring-cyan-200 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white dark:focus:ring-cyan-800"
-    //         >
-    //           <span className="relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-white group-hover:px-5 group-hover:py-2.5 dark:bg-gray-900">
-    //             Remove
-    //           </span>
-    //         </button>
-
-    //         <button className="group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-black focus:outline-none focus:ring-4 focus:ring-cyan-200 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white dark:focus:ring-cyan-800">
-    //           <span className="relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-white group-hover:px-5 group-hover:py-2.5 dark:bg-gray-900">
-    //             View
-    //           </span>
-    //         </button>
-    //       </div>
-    //     ))}
-    //   </div>
-    // </div>
   );
 };
 
