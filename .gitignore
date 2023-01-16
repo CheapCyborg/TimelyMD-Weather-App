@@ -40,10 +40,11 @@ yarn-error.log*
 
 # dotenv local files
 .env*.local
-.env*
+.env
 
 # local folder
 local
 
 # vercel
 .vercel
+.env
