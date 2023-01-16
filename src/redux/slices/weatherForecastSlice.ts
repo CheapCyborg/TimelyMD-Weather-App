@@ -39,7 +39,6 @@ export const getWeatherForecastByCoords = createAsyncThunk(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}&units=imperial`
       );
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       return error;
@@ -58,7 +57,6 @@ export const weatherForecastSlice = createSlice({
     builder.addCase(getWeatherForecastByCity.fulfilled, (state, action) => {
       state.weatherForecastLoading = false;
       state.weatherForecast = action.payload.list;
-      console.log(action.payload);
     });
     builder.addCase(getWeatherForecastByCity.rejected, (state, action) => {
       state.weatherForecastLoading = false;
@@ -70,7 +68,6 @@ export const weatherForecastSlice = createSlice({
     builder.addCase(getWeatherForecastByCoords.fulfilled, (state, action) => {
       state.weatherForecastLoading = false;
       state.weatherForecast = action.payload.list;
-      console.log(action.payload);
     });
     builder.addCase(getWeatherForecastByCoords.rejected, (state, action) => {
       state.weatherForecastLoading = false;
