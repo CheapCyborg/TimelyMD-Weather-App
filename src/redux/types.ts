@@ -41,12 +41,6 @@ export interface WeatherForecast {
   weatherDescription: string;
 }
 
-// //define type for the following {
-//         dt_txt: string | number | Date;
-//         main: { temp_max: number; temp_min: number };
-//         weather: { icon: any; description: string }[];
-//       }
-
 export interface WeatherForecastData {
   dt_txt: string | number | Date;
   main: { temp_max: number; temp_min: number };

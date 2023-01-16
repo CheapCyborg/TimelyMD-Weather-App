@@ -47,17 +47,6 @@ const Index = () => {
     []
   );
 
-  // HOOKS
-  useEffect(() => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        dispatch(getWeatherByCoords(position.coords) as any);
-        dispatch(getCityByCoords(position.coords) as any);
-        dispatch(getWeatherForecastByCoords(position.coords) as any);
-      });
-    }
-  }, []);
-
   // FUNCTIONS
   const getWeatherOnClick = (query: string) => {
     let weatherCity = city;
@@ -139,6 +128,17 @@ const Index = () => {
     setFormattedForecast(weatherForecastByDay);
     return weatherForecastByDay;
   };
+
+  // HOOKS
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        dispatch(getWeatherByCoords(position.coords) as any);
+        dispatch(getCityByCoords(position.coords) as any);
+        dispatch(getWeatherForecastByCoords(position.coords) as any);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (weatherForecast.length > 0) {
