@@ -12,7 +12,10 @@ import {
   getGeoByCity,
   removeLocation,
 } from '@/redux/slices/geoLocationSlice';
-import { getWeatherForecastByCoords } from '@/redux/slices/weatherForecastSlice';
+import {
+  getWeatherForecastByCity,
+  getWeatherForecastByCoords,
+} from '@/redux/slices/weatherForecastSlice';
 import type {
   Location,
   WeatherForecast,
@@ -65,6 +68,13 @@ const Index = () => {
 
     dispatch(
       getWeatherByCity({
+        city: weatherCity,
+        state: weatherState,
+        country: weatherCountry,
+      }) as any
+    );
+    dispatch(
+      getWeatherForecastByCity({
         city: weatherCity,
         state: weatherState,
         country: weatherCountry,
@@ -195,7 +205,7 @@ const Index = () => {
             </div>
           </div>
         )}
-        <div className="mt-8 flex flex-col items-center justify-center">
+        <div className="mt-10 flex flex-row items-center justify-center">
           <div className="mb-10 flex w-auto cursor-pointer flex-col items-center justify-center rounded-lg border bg-white p-6 text-center transition duration-500 ease-in-out hover:scale-105">
             <div className="mb-3 flex flex-col font-bold text-gray-900">
               <span className="uppercase">Today</span>{' '}
@@ -233,7 +243,7 @@ const Index = () => {
                   Wind Speed
                 </span>
                 <span className="text-sm font-normal text-gray-700">
-                  {windSpeed} mph
+                  {windSpeed.toFixed(0)} MPH
                 </span>
               </div>
               <div className="flex flex-col items-center justify-center">
@@ -256,6 +266,49 @@ const Index = () => {
               </span>
             </button>
           </div>
+          {savedLocations.length > 0 && (
+            <div className="ml-10 flex flex-col items-center justify-center rounded-lg border bg-white p-6">
+              <div className="mb-3 flex flex-col text-sm font-bold text-gray-900">
+                <span className="w-max">Saved Locations</span>
+                <span className="text-sm font-normal text-gray-700"></span>
+              </div>
+              {savedLocations.map((location: Location, index: number) => (
+                <div
+                  key={index}
+                  className="mx-2 transition duration-500 ease-in-out hover:scale-105"
+                >
+                  <div className="mb-3 flex flex-col font-bold text-gray-900">
+                    <span className="uppercase">{location.city}</span>
+                    <span className="text-sm font-normal text-gray-700">
+                      {location.currentState}, {location.country}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() =>
+                      dispatch(
+                        removeLocation({
+                          city: location.city,
+                          currentState: location.currentState,
+                          country: location.country,
+                        })
+                      )
+                    }
+                    className="group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-black focus:outline-none focus:ring-4 focus:ring-cyan-200 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white dark:focus:ring-cyan-800"
+                  >
+                    <span className="relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-white group-hover:px-5 group-hover:py-2.5 dark:bg-gray-900">
+                      Remove
+                    </span>
+                  </button>
+
+                  <button className="group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-black focus:outline-none focus:ring-4 focus:ring-cyan-200 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white dark:focus:ring-cyan-800">
+                    <span className="relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-white group-hover:px-5 group-hover:py-2.5 dark:bg-gray-900">
+                      View
+                    </span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center justify-center">
           <h1 className="mb-6 text-2xl font-bold text-gray-900">
@@ -288,40 +341,40 @@ const Index = () => {
             ))}
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold text-gray-900">Saved Locations</h1>
-          <div>
-            {savedLocations.map((location: Location, index: number) => (
-              <div key={index}>
-                <span className="mr-4 text-gray-900">
-                  {location.city}, {location.currentState}, {location.country}
-                </span>
-                <div className="flex flex-row items-center justify-center">
-                  <button
-                    className="rounded-md bg-red-500 p-1 text-white"
-                    onClick={() =>
-                      dispatch(removeLocation({ city, currentState, country }))
-                    }
-                  >
-                    Remove
-                  </button>
-                  <button
-                    className="rounded-md bg-blue-500 p-1 text-white"
-                    onClick={() =>
-                      getWeatherOnClick(
-                        `${location.city}, ${location.currentState}, ${location.country}`
-                      )
-                    }
-                  >
-                    Get Weather
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </Main>
+    //   <div className="mt-8 flex flex-col items-center justify-center">
+
+    //   <div>
+    //     {savedLocations.map((location: Location, index: number) => (
+    //       <div
+    //         key={index}
+    //         className="mx-2 transition duration-500 ease-in-out hover:scale-105"
+    //       >
+    //         <div className="mb-3 flex flex-col font-bold text-gray-900">
+    //           <span className="uppercase">{location.city}</span>
+    //           <span className="text-sm font-normal text-gray-700">
+    //             {location.currentState}, {location.country}
+    //           </span>
+    //         </div>
+    //         <button
+    //           onClick={() => dispatch(removeLocation(index))}
+    //           className="group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-black focus:outline-none focus:ring-4 focus:ring-cyan-200 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white dark:focus:ring-cyan-800"
+    //         >
+    //           <span className="relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-white group-hover:px-5 group-hover:py-2.5 dark:bg-gray-900">
+    //             Remove
+    //           </span>
+    //         </button>
+
+    //         <button className="group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-black focus:outline-none focus:ring-4 focus:ring-cyan-200 group-hover:from-cyan-500 group-hover:to-blue-500 dark:text-white dark:focus:ring-cyan-800">
+    //           <span className="relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-white group-hover:px-5 group-hover:py-2.5 dark:bg-gray-900">
+    //             View
+    //           </span>
+    //         </button>
+    //       </div>
+    //     ))}
+    //   </div>
+    // </div>
   );
 };
 

@@ -64,19 +64,27 @@ export const geoLocationSlice = createSlice({
   initialState,
   reducers: {
     addLocation: (state, action: PayloadAction<Location>) => {
-      state.savedLocations.push(action.payload);
+      const newSavedLocations = state.savedLocations.filter(
+        (location) =>
+          location.city !== action.payload.city ||
+          location.currentState !== action.payload.currentState ||
+          location.country !== action.payload.country
+      );
+      newSavedLocations.push(action.payload);
+      state.savedLocations = newSavedLocations;
       localStorage.setItem(
         'savedLocations',
         JSON.stringify(state.savedLocations)
       );
     },
     removeLocation: (state, action: PayloadAction<Location>) => {
-      state.savedLocations = state.savedLocations.filter(
+      const newSavedLocations = state.savedLocations.filter(
         (location) =>
-          location.city !== action.payload.city &&
-          location.currentState !== action.payload.currentState &&
+          location.city !== action.payload.city ||
+          location.currentState !== action.payload.currentState ||
           location.country !== action.payload.country
       );
+      state.savedLocations = newSavedLocations;
       localStorage.setItem(
         'savedLocations',
         JSON.stringify(state.savedLocations)
