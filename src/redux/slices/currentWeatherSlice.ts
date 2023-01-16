@@ -1,16 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-interface WeatherState {
-  tempHigh: number;
-  tempLow: number;
-  humidity: number;
-  windSpeed: number;
-  feelsLike: number;
-  weatherDescription: string;
-  iconID: string;
-  error: string;
-  weatherLoading: boolean;
-}
+import type { WeatherState } from '../types';
 
 const initialState: WeatherState = {
   tempHigh: 0,
@@ -18,6 +8,7 @@ const initialState: WeatherState = {
   humidity: 0,
   windSpeed: 0,
   feelsLike: 0,
+  time: null,
   weatherDescription: '',
   iconID: '',
   error: '',
@@ -62,14 +53,10 @@ export const getWeatherByCoords = createAsyncThunk(
   }
 );
 
-export const weatherSlice = createSlice({
-  name: 'weather',
+export const currentWeatherSlice = createSlice({
+  name: 'currentWeather',
   initialState,
-  reducers: {
-    setWeatherLoading: (state, action) => {
-      state.weatherLoading = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getWeatherByCity.pending, (state) => {
@@ -119,4 +106,4 @@ export const weatherSlice = createSlice({
   },
 });
 
-export default weatherSlice.reducer;
+export default currentWeatherSlice.reducer;

@@ -1,13 +1,15 @@
 import type { Store } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 
+import currentWeatherSliceReducer from './slices/currentWeatherSlice';
 import geoLocationSliceReducer from './slices/geoLocationSlice';
-import weatherSliceReducer from './slices/weatherSlice';
+import weatherForecaseReducer from './slices/weatherForecastSlice';
 
 export const store: Store = configureStore({
   reducer: {
     geoLocation: geoLocationSliceReducer,
-    weather: weatherSliceReducer,
+    currentWeather: currentWeatherSliceReducer,
+    weatherForecast: weatherForecaseReducer,
   },
 });
 

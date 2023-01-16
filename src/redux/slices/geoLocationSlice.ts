@@ -1,28 +1,24 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export interface Location {
-  city: string;
-  currentState: string;
-  country: string;
-}
-interface GeoLocationState {
-  city: string;
-  currentState: string;
-  country: string;
-  savedLocations: Location[];
-  error: string;
-  cityLoading: boolean;
+import type { GeoLocationState, Location } from '../types';
+
+const savedLocationsLocal: Location[] = [];
+
+if (typeof window !== 'undefined') {
+  const savedLocations = localStorage.getItem('savedLocations');
+  if (savedLocations) {
+    savedLocationsLocal.push(...JSON.parse(savedLocations));
+  }
 }
 
-// Define the initial state using that type
 const initialState: GeoLocationState = {
   city: '',
   currentState: '',
   country: 'US',
-  savedLocations: [],
+  savedLocations: savedLocationsLocal,
   error: '',
-  cityLoading: true,
+  geoLoading: true,
 };
 
 export const getCityByCoords = createAsyncThunk(
@@ -65,11 +61,14 @@ export const getGeoByCity = createAsyncThunk(
 
 export const geoLocationSlice = createSlice({
   name: 'geoLocation',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
     addLocation: (state, action: PayloadAction<Location>) => {
       state.savedLocations.push(action.payload);
+      localStorage.setItem(
+        'savedLocations',
+        JSON.stringify(state.savedLocations)
+      );
     },
     removeLocation: (state, action: PayloadAction<Location>) => {
       state.savedLocations = state.savedLocations.filter(
@@ -78,18 +77,22 @@ export const geoLocationSlice = createSlice({
           location.currentState !== action.payload.currentState &&
           location.country !== action.payload.country
       );
+      localStorage.setItem(
+        'savedLocations',
+        JSON.stringify(state.savedLocations)
+      );
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getCityByCoords.pending, (state) => {
-        state.cityLoading = true;
+        state.geoLoading = true;
       })
       .addCase(getCityByCoords.fulfilled, (state, action) => {
-        state.cityLoading = false;
+        state.geoLoading = false;
         if (action.payload.length === 0) {
           state.error = 'Nothing found';
-          state.cityLoading = false;
+          state.geoLoading = false;
           return;
         }
         state.city = action.payload[0].name;
@@ -98,16 +101,16 @@ export const geoLocationSlice = createSlice({
         state.error = '';
       })
       .addCase(getCityByCoords.rejected, (state) => {
-        state.cityLoading = false;
+        state.geoLoading = false;
       })
       .addCase(getGeoByCity.pending, (state) => {
-        state.cityLoading = true;
+        state.geoLoading = true;
       })
       .addCase(getGeoByCity.fulfilled, (state, action) => {
-        state.cityLoading = false;
+        state.geoLoading = false;
         if (action.payload.length === 0) {
           state.error = 'Nothing found';
-          state.cityLoading = false;
+          state.geoLoading = false;
           return;
         }
         state.city = action.payload[0].name;
@@ -116,7 +119,7 @@ export const geoLocationSlice = createSlice({
         state.error = '';
       })
       .addCase(getGeoByCity.rejected, (state) => {
-        state.cityLoading = false;
+        state.geoLoading = false;
       });
   },
 });
