@@ -13,21 +13,6 @@ describe('Index page', () => {
   beforeEach(() => {
     const mockUseAppSelector = useAppSelector as jest.Mock;
     mockUseAppSelector.mockImplementation(testUseAppSelector);
-    mockUseAppSelector.mockReturnValue({
-      currentWeather: {
-        weatherLoading: false,
-        error: null,
-      },
-      geoLocation: {
-        geoLoading: false,
-        city: 'London',
-        currentState: 'England',
-        country: 'UK',
-      },
-      weatherForecast: {
-        weatherForecastLoading: false,
-      },
-    });
   });
 
   afterEach(() => {
@@ -37,23 +22,17 @@ describe('Index page', () => {
   it('should render the page', () => {
     render(<Index />);
 
-    expect(screen.getByText('Weather')).toBeInTheDocument();
+    expect(screen.getByText('Weather Finder')).toBeInTheDocument();
   });
 
   it('should display loading spinner when weatherLoading is true', () => {
     const mockUseAppSelector = useAppSelector as jest.Mock;
-    mockUseAppSelector.mockImplementation(
-      testUseAppSelector((state) => ({
-        ...state,
-        currentWeather: {
-          ...state.currentWeather,
-          weatherLoading: true,
-        },
-      }))
-    );
-
+    mockUseAppSelector.mockReturnValue({
+      weatherLoading: true,
+      error: null,
+    });
     render(<Index />);
-
+    // check for div with class name animate-spin
     expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 });

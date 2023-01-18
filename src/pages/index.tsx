@@ -90,7 +90,10 @@ const Index = () => {
     return (
       <Main meta={<Meta title="Weather App" description="Weather App" />}>
         <div className="flex h-screen items-center justify-center">
-          <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-gray-900"></div>
+          <div
+            data-testid="loading-spinner"
+            className="h-32 w-32 animate-spin rounded-full border-b-2 border-gray-900"
+          ></div>
         </div>
       </Main>
     );
