@@ -16,7 +16,13 @@ const state = {
     city: 'New York',
     currentState: 'NY',
     country: 'US',
-    savedLocations: [] as Location[],
+    savedLocations: [
+      {
+        city: 'New York',
+        currentState: 'NY',
+        country: 'US',
+      },
+    ] as Location[],
     error: '',
   },
   weatherForecast: {

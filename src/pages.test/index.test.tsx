@@ -19,20 +19,41 @@ describe('Index page', () => {
     jest.clearAllMocks();
   });
 
-  it('should render the page', () => {
-    render(<Index />);
+  describe('Render method', () => {
+    it('should render the page', () => {
+      render(<Index />);
 
-    expect(screen.getByText('Weather Finder')).toBeInTheDocument();
-  });
-
-  it('should display loading spinner when weatherLoading is true', () => {
-    const mockUseAppSelector = useAppSelector as jest.Mock;
-    mockUseAppSelector.mockReturnValue({
-      weatherLoading: true,
-      error: null,
+      expect(screen.getByText('Weather Finder')).toBeInTheDocument();
     });
-    render(<Index />);
-    // check for div with class name animate-spin
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+
+    it('should display loading spinner when weather is loading', () => {
+      const mockUseAppSelector = useAppSelector as jest.Mock;
+      mockUseAppSelector.mockReturnValue({
+        weatherLoading: true,
+        error: null,
+      });
+      render(<Index />);
+      expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+    });
+
+    it('should display loading spinner when geo is loading', () => {
+      const mockUseAppSelector = useAppSelector as jest.Mock;
+      mockUseAppSelector.mockReturnValue({
+        geoLoading: true,
+        error: null,
+      });
+      render(<Index />);
+      expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+    });
+
+    it('should display loading spinner when weather forecast is loading', () => {
+      const mockUseAppSelector = useAppSelector as jest.Mock;
+      mockUseAppSelector.mockReturnValue({
+        weatherForecastLoading: true,
+        error: null,
+      });
+      render(<Index />);
+      expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+    });
   });
 });
